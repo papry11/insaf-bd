@@ -3,8 +3,7 @@ import { ShopContext } from "../context/ShopContext";
 import Title from "./Title";
 import ProductItem from "./ProductItem";
 import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBagShopping } from "@fortawesome/free-solid-svg-icons";
+
 
 
 // Swiper imports
@@ -17,7 +16,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 const LatestCollection = () => {
-  const { products , getCartCount } = useContext(ShopContext);
+  const { products ,  } = useContext(ShopContext);
   const [latestProducts, setLatestProducts] = useState([]);
 
   useEffect(() => {
@@ -28,10 +27,6 @@ const LatestCollection = () => {
     <div className="my-10">
       <div className="text-center py-8 text-3xl">
         <Title text1={"LATEST"} text2={"COLLECTION"} />
-        <Link to='/cart' className="relative pl-5">
-          <FontAwesomeIcon className="text-3xl cursor-pointer text-gray-400" icon={faBagShopping} />
-          <p className="absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-red-600 text-white aspect-square rounded-full text-[12px]">{getCartCount()}</p>
-        </Link>
       </div>
 
       {/* ✅ Product Slider with Autoplay */}
@@ -43,7 +38,7 @@ const LatestCollection = () => {
         pagination={{ clickable: true }}
         autoplay={{
           delay: 3000,
-          disableOnInteraction: false, // user click korleo autoplay bondho hobe na
+          disableOnInteraction: false, 
         }}
         loop={true} // Infinite loop
         breakpoints={{

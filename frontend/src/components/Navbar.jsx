@@ -70,11 +70,18 @@ const Navbar = () => {
           )}
         </div> */}
 
-        {/* Cart */}
-        <Link to='/cart' className="relative">
-          <FontAwesomeIcon className="text-xl cursor-pointer" icon={faBagShopping} />
-          <p className="absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-red-600 text-white aspect-square rounded-full text-[12px]">{getCartCount()}</p>
-        </Link>
+       {/* Cart */}
+<Link to='/cart' className="relative flex items-center gap-2 bg-[#b47ab1] text-white px-6 py-3 rounded">
+  Buy Now
+  <div className="relative">
+    <FontAwesomeIcon className="text-xl cursor-pointer" icon={faBagShopping} />
+    {getCartCount() > 0 && (
+      <span className="absolute -bottom-2 -right-2 w-4 h-4 flex items-center justify-center bg-red-600 text-white rounded-full text-xs">
+        {getCartCount()}
+      </span>
+    )}
+  </div>
+</Link>
 
         {/* Mobile Menu Icon */}
         <img onClick={() => setVisible(true)} src={assets.menu_icon} className="w-5 cursor-pointer sm:hidden" alt="menu icon" />
