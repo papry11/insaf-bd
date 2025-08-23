@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Prata&display=swap');
 @import "tailwindcss";
+@import "swiper/css";
+@import "swiper/css/navigation";
+@import "swiper/css/pagination";
+
 
 a.active hr{
     display: block;
@@ -9,8 +13,8 @@ a.active hr{
     font-family: Outfit;
 }
 body {
-  background: linear-gradient(to bottom right, #000000, #1f2937, #000000);
-  color: white; /* optional: for light text globally */
+  background:#f8fafc;
+  color: black; /* optional: for light text globally */
 }
 
 
@@ -33,7 +37,7 @@ body {
 
 @media (max-width:640px){
   a.active{
-    background-color: black;
-    color:white;
+    background-color:gray;
+    color:rgb(255, 255, 255);
   }
 }

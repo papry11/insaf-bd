@@ -3,22 +3,22 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="px-6 md:px-16 lg:px-14 xl:px-3 pt-8 w-full text-white">
+    <footer className="px-6 md:px-16 lg:px-14 xl:px-3 pt-8 w-full text-gray-800">
       <div className="flex flex-col md:flex-row justify-between w-full gap-10 border-b border-gray-200/40 pb-6">
         <div className="md:max-w-96">
           <Link to="/">
             {" "}
             <h1 className="prata-regular text-2xl sm:py-3 lg:text-4xl">
-              NEXT FORTUNE
+             INSAAF BD
             </h1>
           </Link>
           <p className="mt-6 text-sm">
-            Next Fortune is a lifestyle for those who create their path, wear ambition, and build their own future. More than clothing, it's a powerful mindset. Own your story. Wear your drive. Live Next Fortune. Join the movement. Be the brand. Define your future.
+           INSAAF BD is a lifestyle for those who create their path, wear ambition, and build their own future. More than clothing, it's a powerful mindset. Own your story. Wear your drive. Live INSAAF BD. Join the movement. Be the brand. Define your future.
           </p>
         </div>
         <div className="flex-1 flex items-start md:justify-end gap-20">
           <div>
-            <h2 className="font-semibold mb-5 text-gray-200">Company</h2>
+            <h2 className="font-semibold mb-5 text-gray-800">Company</h2>
             <ul className="text-sm space-y-2">
               <li>
                 <a href="/">Home</a>
@@ -35,21 +35,21 @@ const Footer = () => {
             </ul>
           </div>
           <div>
-            <h2 className="font-semibold mb-5 text-gray-200">Get in touch</h2>
+            <h2 className="font-semibold mb-5 text-gray-800">Get in touch</h2>
             <div className="text-sm space-y-2">
               <p>
                 Tel:{" "}
                 <a href=" " className="text-blue-600 hover:underline">
-                  01924252432
+                  01970549838
                 </a>
               </p>
               <p>
                 Email:{" "}
                 <a
-                  href="mailto:nextfortune@gamil.com"
+                  href="mailto:insaafbd@gamil.com"
                   className="text-blue-600 hover:underline"
                 >
-                  nextfortune@gamil.com
+                  insaafbd@gamil.com
                 </a>
               </p>
             </div>
@@ -57,7 +57,7 @@ const Footer = () => {
         </div>
       </div>
       <p className="pt-4 text-center text-xs md:text-sm pb-5">
-        Copyright 2025 © NEXT FORTUNE All Right Reserved. DESIGNED & DEVELOPED BY
+        Copyright 2025 © INSAAF BD All Right Reserved. DESIGNED & DEVELOPED BY
         JANNATUL FERDOUS PAPRY
       </p>
     </footer>

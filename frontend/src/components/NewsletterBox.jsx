@@ -8,9 +8,11 @@ const NewsletterBox = () => {
   return (
     <div className='text-center'>
           <p className='text-2xl font-medium text-gray-white'>Subscribe now & get 20% off</p>
-          <form onSubmit={onSubmitHandler} className='w-full sm:w-1/2 flex flex-items-center gap-3 mx-auto my-6 pl-3 border border-gray-200/40 rounded' action="">
+          <form onSubmit={onSubmitHandler} className='w-full sm:w-1/2 flex flex-items-center gap-3 mx-auto my-6 pl-3 border border-gray-400/40 rounded' action="">
               <input className='w-full sm:flex-1 outline-none' type="email" placeholder='Enter your email' />
-             <button type="button" class="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium text-sm px-8 py-3 text-center rounded">SUBSCRIBE</button>
+             <button type="button" className="bg-[#b47ab1] px-6 py-2 rounded text-white 
+             transition transform duration-300 ease-in-out
+             hover:scale-105 hover:bg-[#9b5fa0]">SUBSCRIBE</button>
           </form>
     </div>
   )

@@ -96,12 +96,12 @@ const Collection = () => {
           />
         </p>
         <div
-          className={`border border-gray-00 pl-5 py-3 mt-6 ${
+          className={`border border-gray-400 pl-5 py-3 mt-6 ${
             showFilter ? "" : "hidden"
           } sm:block`}
         >
           <p className="mb-3 text-sm font-medium">CATEGORIES</p>
-          <div className="flex flex-col gap-2 text-sm font-light text-gray-200">
+          <div className="flex flex-col gap-2  text-sm font-light text-gray-900">
             <p className="flex gap-2">
               <input
                 className="w-3"
@@ -133,12 +133,12 @@ const Collection = () => {
         </div>
         {/* subcategory filter */}
         <div
-          className={`border border-gray-300 pl-5 py-3 my-5 ${
+          className={`border border-gray-400 pl-5 py-3 my-5 ${
             showFilter ? "" : "hidden"
           } sm:block`}
         >
           <p className="mb-3 text-sm font-medium">TYPE</p>
-          <div className="flex flex-col gap-2 text-sm font-light text-gray-200">
+          <div className="flex flex-col gap-2 text-sm font-light text-gray-900">
             <p className="flex gap-2">
               <input
                 className="w-3"
@@ -174,7 +174,7 @@ const Collection = () => {
         <div className="flex justify-between text-base sm:text-2xl mb-4">
           <Title text1={"ALL"} text2={"COLLECTIONS"} />
           {/* product sort */}
-          <select onChange={(e)=>setSortType(e.target.value)} className="bg-black border border-gray-300 text-sm px-2" name="" id="">
+          <select onChange={(e)=>setSortType(e.target.value)} className="bg-white border border-gray-300 text-sm px-2" name="" id="">
             <option value="Relavent">Sort by: Relavent</option>
             <option value="low-high">price: Low to High</option>
             <option value="high-low">price: High to Low</option>

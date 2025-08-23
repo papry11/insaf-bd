@@ -25,7 +25,7 @@ const GuestCheckout = () => {
         productId,
         size,
         quantity,
-        price: 0, // পরে backend থেকে আনব
+        price: 0, 
         name: "",
         image: "",
       }))
@@ -128,7 +128,7 @@ const GuestCheckout = () => {
       {/* LEFT SIDE */}
       <div className="flex flex-col gap-4 w-full sm:max-w-[480px]">
         <div className="text-xl sm:text-2xl my-3">
-          <Title text1={"GUEST"} text2={"CHECKOUT"} />
+          <Title text1={"DELIVERY"} text2={"INFORMATION"} />
         </div>
         <div className="gap-3">
           <label className="mx-2">Name</label>
@@ -228,7 +228,9 @@ const GuestCheckout = () => {
           <div className="w-full">
             <button
               type="submit"
-              className="w-full mt-6 relative inline-flex items-center justify-center p-3 mb-2 me-2 overflow-hidden text-base font-semibold text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 hover:from-pink-600 hover:to-orange-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 transition-all duration-300 ease-in-out transform hover:scale-105 cursor-pointer"
+              className="bg-[#b47ab1] mt-3 w-full px-8 py-2 rounded text-white 
+             transition transform duration-300 ease-in-out
+             hover:scale-105 hover:bg-[#9b5fa0]"
             >
               PLACE ORDER
             </button>

@@ -18,15 +18,15 @@ const Navbar = () => {
   };
 
   return (
-    <div className="px-4 md:px-12 flex flex-wrap items-center justify-between gap-4 py-5 font-medium border-b border-gray-200/40 relative z-20 ">
+    <div className="px-4 md:px-12 flex flex-wrap items-center justify-between gap-4 py-5 font-medium border-b border-gray-300/60 relative z-20 ">
       
       {/* Logo */}
       <Link to='/' className="flex-shrink-0">
-        <h1 className="prata-regular text-xl sm:py-3 lg:text-4xl">INSAAF BD</h1>
+        <h1 className="prata-regular text-gray-800e43w text-xl sm:py-3 lg:text-4xl">INSAAF BD</h1>
       </Link>
 
       {/* Desktop Menu */}
-      <ul className="hidden sm:flex gap-5 text-sm text-white">
+      <ul className="hidden sm:flex gap-5 text-sm text-gray-800">
         <NavLink to="/" className="flex flex-col items-center gap-1">
           <p>HOME</p>
           <hr className="w-2/4 border-none h-[1.5px] bg-white hidden" />
@@ -50,7 +50,7 @@ const Navbar = () => {
         <FontAwesomeIcon onClick={() => setShowSearch(true)} className="text-xl cursor-pointer" icon={faMagnifyingGlass} />
 
         {/* Profile */}
-        <div className="relative group">
+        {/* <div className="relative group">
           {!token ? (
             <Link to='/login'>
               <FontAwesomeIcon className="text-xl cursor-pointer" icon={faUser} />
@@ -68,7 +68,7 @@ const Navbar = () => {
               </div>
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* Cart */}
         <Link to='/cart' className="relative">

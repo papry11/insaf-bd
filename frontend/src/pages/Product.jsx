@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
@@ -48,7 +49,7 @@ const Product = () => {
             {currency}
             {productData.price}
           </p>
-          <p className="mt-5 text-gray-300 md:w-4/5">
+          <p className="mt-5 text-gray-400 md:w-4/5">
             {productData.description}
           </p>
 
@@ -62,8 +63,8 @@ const Product = () => {
                   className={`py-2 px-4 rounded border transition 
                     ${
                       item === size
-                        ? "border-red-400 bg-white text-red-500"
-                        : "border-gray-200/40 bg-black"
+                        ? "border-[#f375ed] bg-[#fff7ff] text-[#d642cf]"
+                        : "border-gray-600/40 bg-white"
                     }`}
                 >
                   {item}
@@ -71,27 +72,27 @@ const Product = () => {
               ))}
             </div>
           </div>
-           <button onClick={()=>addToCart(productData._id,size)} class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800">
-              <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
-                ADD TO CART
-              </span>
-          </button>
-           <Link to='/cart'
-            class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800">
-              <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
-                GO TO CART
-              </span>
-            </Link>
+
+          <Link 
+            to='/cart' 
+            onClick={() => addToCart(productData._id, size || "")} // size optional
+           className="bg-[#b47ab1] px-8 py-2 rounded text-white 
+             transition transform duration-300 ease-in-out
+             hover:scale-105 hover:bg-[#9b5fa0]"
+          >
+              Select
+          </Link>
+
           <hr className="mt-8 sm:w-4/5 text-gray-300 " />
-          <div className="text-sm text-gray-200 mt-5 flex flex-col gap-1">
+          <div className="text-sm text-gray-600 mt-5 flex flex-col gap-1">
             <p>100% Original product.</p>
             <p>Cash on delivery is available on this product.</p>
             <p>Easy return and exchange policy within 7 days.</p>
           </div>
         </div>
       </div>
-      {/* display related product ----------------------*/}
 
+      {/* display related product ----------------------*/}
       <RelatedProducts category={productData.category} subCategory={productData.subCategory} />
     </div>
   ) : (
@@ -100,3 +101,4 @@ const Product = () => {
 };
 
 export default Product;
+
