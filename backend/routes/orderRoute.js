@@ -11,6 +11,8 @@ const orderRouter = express.Router()
 orderRouter.post('/list', adminAuth, allOrders)
 orderRouter.post('/status', adminAuth, updateStatus)
 
+
+
 // Guest user order
 orderRouter.post("/place-guest", placeGuestOrder);
 

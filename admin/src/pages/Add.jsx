@@ -244,7 +244,9 @@ const Add = () => {
       </div>
 
       <button
-        className="w-28 py-2 mt-4 text-white bg-black rounded cursor-pointer"
+       className="bg-[#b47ab1] px-8 py-2 rounded text-white 
+             transition transform duration-300 ease-in-out
+             hover:scale-105 hover:bg-[#9b5fa0]"
         type="submit"
       >
         ADD
