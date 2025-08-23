@@ -7,7 +7,7 @@ const Hero = () => {
       <div className="z-10 w-full lg:w-1/2 flex flex-col gap-4 sm:gap-6 items-center text-center">
         {/* Small Top Line */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-[3px] bg-pink-500 rounded"></div>
+          <div className="w-10 h-[3px] bg-[#bb72b7] rounded"></div>
           <p className="uppercase text-blue-950 tracking-widest text-sm sm:text-base font-medium">
             Assalamu Walaikum...
           </p>
