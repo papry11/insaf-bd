@@ -46,10 +46,10 @@ const Footer = () => {
               <p>
                 Email:{" "}
                 <a
-                  href="mailto:insaafbd@gamil.com"
+                  href="mailto:insaaffbd@gamil.com"
                   className="text-blue-600 hover:underline"
                 >
-                  insaafbd@gamil.com
+                  insaaffbd@gamil.com
                 </a>
               </p>
             </div>
@@ -57,7 +57,7 @@ const Footer = () => {
         </div>
       </div>
       <p className="pt-4 text-center text-xs md:text-sm pb-5">
-        Copyright 2025 © INSAAF BD All Right Reserved. DESIGNED & DEVELOPED BY
+        Copyright 2025 © INSAAFF BD All Right Reserved. DESIGNED & DEVELOPED BY
         JANNATUL FERDOUS PAPRY
       </p>
     </footer>

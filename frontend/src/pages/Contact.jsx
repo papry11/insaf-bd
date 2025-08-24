@@ -32,21 +32,21 @@ const Contact = () => {
               Our Office
             </h3>
             <address className="not-italic space-y-1 text-base text-gray-800 leading-relaxed">
-              <p>Banani</p>
-              <p>Dhaka, 1213</p>
+              <p>MIRPUR 10 </p>
+              <p>Dhaka, 1216</p>
               <p>
                 Tel:{" "}
-                <a href="tel:+88019820xxxxx" className="text-gray-800 hover:underline">
-                  +88019820*****
+                <a href="tel:+8801970549838" className="text-gray-800 hover:underline">
+                  +8801970549838
                 </a>
               </p>
               <p>
                 Email:{" "}
                 <a
-                  href="mailto:insaafbd@gmail.com"
+                  href="mailto:insaffbd@gmail.com"
                   className="text-gray-400 hover:underline"
                 >
-                  inssafbd@gmail.com
+                  inssaffbd@gmail.com
                 </a>
               </p>
             </address>
