@@ -76,10 +76,10 @@ const Product = () => {
           <Link 
             to='/cart' 
             onClick={() => addToCart(productData._id, size || "")} // size optional
-           className="bg-[#b47ab1] px-8 py-2 rounded text-white 
-             transition transform duration-300 ease-in-out
-             hover:scale-105 hover:bg-[#9b5fa0]"
-          >
+           className="mt-6 px-12 py-3 rounded-full font-semibold text-white text-lg
+          bg-gradient-to-r from-[#9b5fa0] to-[#7f3f85] 
+          shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-2xl"
+        >
               Select
           </Link>
 

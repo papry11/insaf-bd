@@ -4,7 +4,6 @@ import Title from "../components/Title";
 import { assets } from "../assets/assets";
 import CartTotal from "../components/CartTotal";
 
-
 const Cart = () => {
   const {
     products,
@@ -113,9 +112,9 @@ const Cart = () => {
             <div className="w-full ">
               <button
                 onClick={() => navigate("/place-order")}
-                className="bg-[#b47ab1] mt-3 w-full px-8 py-2 rounded text-white
-             transition transform duration-300 ease-in-out
-             hover:scale-105 hover:bg-[#9b5fa0]"
+                className="w-full mt-6 px-12 py-2 rounded-full font-semibold text-white text-lg
+          bg-gradient-to-r from-[#9b5fa0] to-[#7f3f85] 
+          shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-2xl"
               >
                 ORDER NOW
               </button>
@@ -128,4 +127,3 @@ const Cart = () => {
 };
 
 export default Cart;
-

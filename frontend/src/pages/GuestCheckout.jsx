@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Title from "../components/Title";
@@ -6,7 +5,8 @@ import CartTotal from "../components/CartTotal";
 import { ShopContext } from "../context/ShopContext";
 
 const GuestCheckout = () => {
-  const { setCartItems: setContextCartItems, backendUrl } = useContext(ShopContext);
+  const { setCartItems: setContextCartItems, backendUrl } =
+    useContext(ShopContext);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -25,7 +25,7 @@ const GuestCheckout = () => {
         productId,
         size,
         quantity,
-        price: 0, 
+        price: 0,
         name: "",
         image: "",
       }))
@@ -40,7 +40,9 @@ const GuestCheckout = () => {
       try {
         const updated = await Promise.all(
           cartItems.map(async (item) => {
-            const res = await axios.get(`${backendUrl}/api/product/${item.productId}`);
+            const res = await axios.get(
+              `${backendUrl}/api/product/${item.productId}`
+            );
             const product = res.data;
 
             return {
@@ -94,19 +96,15 @@ const GuestCheckout = () => {
         paymentMethod: method,
       });
 
-    const res = await axios.post(
-  `${backendUrl}/api/order/place-guest`,
-  {
-    fullName: formData.fullName,
-    phone: formData.phone,
-    fullAddress: formData.fullAddress,
-    items: cartItems,
-    amount: finalAmount,
-    deliveryCharge: shippingCharge, 
-    paymentMethod: method,
-  }
-);
-
+      const res = await axios.post(`${backendUrl}/api/order/place-guest`, {
+        fullName: formData.fullName,
+        phone: formData.phone,
+        fullAddress: formData.fullAddress,
+        items: cartItems,
+        amount: finalAmount,
+        deliveryCharge: shippingCharge,
+        paymentMethod: method,
+      });
 
       // ✅ Clear cart after order
       localStorage.removeItem("cart");
@@ -228,9 +226,9 @@ const GuestCheckout = () => {
           <div className="w-full">
             <button
               type="submit"
-              className="bg-[#b47ab1] mt-3 w-full px-8 py-2 rounded text-white 
-             transition transform duration-300 ease-in-out
-             hover:scale-105 hover:bg-[#9b5fa0]"
+              className="w-full mt-6 px-12 py-2 rounded-full font-semibold text-white text-lg
+              bg-gradient-to-r from-[#9b5fa0] to-[#7f3f85] 
+              shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-2xl"
             >
               PLACE ORDER
             </button>

@@ -7,13 +7,15 @@ const Footer = () => {
       <div className="flex flex-col md:flex-row justify-between w-full gap-10 border-b border-gray-200/40 pb-6">
         <div className="md:max-w-96">
           <Link to="/">
-            {" "}
             <h1 className="prata-regular text-2xl sm:py-3 lg:text-4xl">
-             INSAAF BD
+              INSAFF BD
             </h1>
           </Link>
           <p className="mt-6 text-sm">
-           INSAAF BD is a lifestyle for those who create their path, wear ambition, and build their own future. More than clothing, it's a powerful mindset. Own your story. Wear your drive. Live INSAAF BD. Join the movement. Be the brand. Define your future.
+            INSAFF BD is a lifestyle for those who create their path, wear ambition, 
+            and build their own future. More than clothing, it's a powerful mindset. 
+            Own your story. Wear your drive. Live INSAFF BD. Join the movement. 
+            Be the brand. Define your future.
           </p>
         </div>
         <div className="flex-1 flex items-start md:justify-end gap-20">
@@ -39,17 +41,28 @@ const Footer = () => {
             <div className="text-sm space-y-2">
               <p>
                 Tel:{" "}
-                <a href=" " className="text-blue-600 hover:underline">
+                <a href="tel:01970549838" className="text-blue-600 hover:underline">
                   01970549838
                 </a>
               </p>
               <p>
                 Email:{" "}
                 <a
-                  href="mailto:insaaffbd@gamil.com"
+                  href="mailto:insaffbd@gmail.com"
                   className="text-blue-600 hover:underline"
                 >
-                  insaaffbd@gamil.com
+                  INSAFFbd@gmail.com
+                </a>
+              </p>
+              <p>
+                Facebook:{" "}
+                     <a
+                  href="https://www.facebook.com/profile.php?id=61559217434479"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  INSAFF.bd
                 </a>
               </p>
             </div>
@@ -57,7 +70,7 @@ const Footer = () => {
         </div>
       </div>
       <p className="pt-4 text-center text-xs md:text-sm pb-5">
-        Copyright 2025 © INSAAFF BD All Right Reserved. DESIGNED & DEVELOPED BY
+        Copyright 2025 © INSAFF BD All Right Reserved. DESIGNED & DEVELOPED BY
         JANNATUL FERDOUS PAPRY
       </p>
     </footer>

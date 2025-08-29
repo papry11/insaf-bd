@@ -3,46 +3,46 @@ import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
-    <div className="border border-[#bb72b7] rounded-2xl flex flex-col lg:flex-row items-center justify-center bg-[#e0d7e0] text-white px-4 sm:px-6 lg:px-12 py-16 relative overflow-hidden">
-      <div className="z-10 w-full lg:w-1/2 flex flex-col gap-4 sm:gap-6 items-center text-center">
-        {/* Small Top Line */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-[3px] bg-[#bb72b7] rounded"></div>
-          <p className="uppercase text-blue-950 tracking-widest text-sm sm:text-base font-medium">
-            Assalamu Walaikum...
-          </p>
-        </div>
+    <div className="relative bg-gradient-to-b from-[#faf7fb] via-[#f3eaf7] to-[#e7d8ee] rounded-3xl shadow-lg overflow-hidden py-20 px-6 sm:px-10 lg:px-20 text-center">
+      {/* Subtle glow behind */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(224,138,220,0.15),transparent_70%)]"></div>
 
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center gap-6 max-w-3xl mx-auto">
+        {/* Small Intro */}
+          {/* Accent line */}
+        
+        <p className=" uppercase text-[#7f3f85] tracking-[0.2em] text-sm sm:text-base font-medium">
+          Assalamu Walaikum...
+        </p>
+        <div className="w-20 h-1 bg-gradient-to-r from-[#e08adc] to-[#F15BB5] rounded-full"></div>
         {/* Main Heading */}
-        <h1
-          className="text-3xl sm:text-4xl lg:text-6xl font-extrabold 
-               sm:whitespace-normal lg:whitespace-nowrap text-shadow-black
-               bg-gradient-to-r from-[#e08adc] via-[#9B5DE5] to-[#F15BB5]
-              text-transparent bg-clip-text drop-shadow-lg animate-fade-in"
-        >
+        <h1 className="text-4xl sm:text-4xl lg:text-6xl font-extrabold leading-tight 
+          bg-gradient-to-r from-[#aa13a3] via-[#9B5DE5] to-[#F15BB5] 
+          text-transparent bg-clip-text drop-shadow-md">
           WELCOME TO INSAFF BD
         </h1>
 
+      
         {/* Subtitle */}
-        <p className="text-gray-800 max-w-md sm:max-w-lg text-sm sm:text-base px-2 sm:px-4">
-          Unlock premium collections and shop with style. The future of fashion
-          starts here.
+        <p className="text-gray-700 text-base sm:text-lg max-w-xl">
+          Discover timeless fashion with a modern touch.  
+          Premium collections crafted to elevate your lifestyle.
         </p>
 
-        {/* Button */}
-        <div>
-          <Link
-            to="/collection"
-            className="bg-[#9b5fa0] px-6 py-2 rounded text-white 
-             transition transform duration-300 ease-in-out
-             hover:scale-105 hover:bg-[#7f3f85]"
-          >
-            SHOP NOW !
-          </Link>
-        </div>
+        {/* CTA */}
+        <Link
+          to="/collection"
+          className="mt-6 px-12 py-3 rounded-full font-semibold text-white text-lg
+          bg-gradient-to-r from-[#9b5fa0] to-[#7f3f85] 
+          shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-2xl"
+        >
+          Shop Now
+        </Link>
       </div>
     </div>
   );
 };
 
 export default Hero;
+

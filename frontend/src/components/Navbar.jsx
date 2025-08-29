@@ -27,7 +27,7 @@ const Navbar = () => {
       {/* Logo */}
       <Link to="/" className="flex-shrink-0">
         <h1 className="prata-regular text-gray-800 text-xl sm:py-3 lg:text-4xl">
-          IN<span className="prata-regular text-[#b429ad] text-xl sm:py-3 lg:text-5xl">S</span>AFF BD
+          INSAFF BD
         </h1>
       </Link>
 
@@ -114,7 +114,7 @@ const Navbar = () => {
           visible ? "w-full max-w-xs shadow-lg" : "w-0"
         }`}
       >
-        <div className="flex flex-col text-gray-600 h-full">
+        <div className="flex flex-col text-gray-900 h-full">
           <div
             onClick={() => setVisible(false)}
             className="flex items-center gap-4 p-3 cursor-pointer"
