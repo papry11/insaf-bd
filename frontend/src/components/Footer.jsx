@@ -51,7 +51,7 @@ const Footer = () => {
                   href="mailto:insaffbd@gmail.com"
                   className="text-blue-600 hover:underline"
                 >
-                  INSAFFbd@gmail.com
+                  insaffbd@gmail.com
                 </a>
               </p>
               <p>
@@ -62,7 +62,7 @@ const Footer = () => {
                   rel="noopener noreferrer"
                   className="text-blue-600 hover:underline"
                 >
-                  INSAFF.bd
+                  insaff.bd
                 </a>
               </p>
             </div>

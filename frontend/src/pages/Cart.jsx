@@ -36,6 +36,51 @@ const Cart = () => {
     }
   }, [cartItems, products]);
 
+  // ✅ quantity update with add_to_cart event
+  const handleQuantityChange = (product, size, value) => {
+    if (value === "" || value === "0") return;
+
+    updateQuantity(product._id, size, Number(value));
+
+    // Pixel Event: add_to_cart
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "add_to_cart",
+      ecommerce: {
+        items: [
+          {
+            item_id: product._id,
+            item_name: product.name,
+            price: product.price,
+            quantity: Number(value),
+            item_variant: size,
+          },
+        ],
+      },
+    });
+  };
+
+  // ✅ removeFromCart with remove_from_cart event
+  const handleRemove = (product, size) => {
+    removeFromCart(product._id, size);
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "remove_from_cart",
+      ecommerce: {
+        items: [
+          {
+            item_id: product._id,
+            item_name: product.name,
+            price: product.price,
+            quantity: 1, // এখানে ১ বা item.quantity দিতে পারেন
+            item_variant: size,
+          },
+        ],
+      },
+    });
+  };
+
   return (
     <div className="pt-14 px-4">
       <div className="text-2xl mb-3">
@@ -79,13 +124,11 @@ const Cart = () => {
                       {/* ✅ quantity update */}
                       <input
                         onChange={(e) =>
-                          e.target.value === "" || e.target.value === "0"
-                            ? null
-                            : updateQuantity(
-                                item._id,
-                                item.size,
-                                Number(e.target.value)
-                              )
+                          handleQuantityChange(
+                            ProductData,
+                            item.size,
+                            e.target.value
+                          )
                         }
                         className="text-center bg-gray-200 max-w-10 sm:max-w-20 px-1 sm:px-2 py-1"
                         type="number"
@@ -93,9 +136,9 @@ const Cart = () => {
                         defaultValue={item.quantity}
                       />
 
-                      {/* ✅ removeFromCart instead of updateQuantity(...,0) */}
+                      {/* ✅ removeFromCart */}
                       <img
-                        onClick={() => removeFromCart(item._id, item.size)}
+                        onClick={() => handleRemove(ProductData, item.size)}
                         className="w-5 mr-4 sm:w-5 cursor-pointer"
                         src={assets.bin_icon}
                         alt="Delete"

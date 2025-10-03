@@ -106,12 +106,33 @@ const GuestCheckout = () => {
         paymentMethod: method,
       });
 
-      // ✅ Clear cart after order
-      localStorage.removeItem("cart");
-      setCartItems([]);
-      setContextCartItems({});
+      if (res.data?.trackingId) {
+        // ✅ Pixel / GTM Purchase Event push
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          event: "purchase",
+          ecommerce: {
+            transaction_id: res.data.trackingId, // Order tracking ID
+            value: finalAmount,
+            currency: "BDT",
+            items: cartItems.map((item) => ({
+              item_id: item.productId,
+              item_name: item.name,
+              price: item.price,
+              quantity: item.quantity,
+            })),
+          },
+        });
 
-      alert(`✅ অর্ডার সম্পন্ন হয়েছে! Tracking ID: ${res.data.trackingId}`);
+        // ✅ Clear cart after order
+        localStorage.removeItem("cart");
+        setCartItems([]);
+        setContextCartItems({});
+
+        alert(`✅ অর্ডার সম্পন্ন হয়েছে! Tracking ID: ${res.data.trackingId}`);
+      } else {
+        alert("❌ অর্ডার ব্যর্থ হয়েছে, আবার চেষ্টা করুন।");
+      }
     } catch (err) {
       console.error("❌ Order Failed:", err);
       alert("❌ অর্ডার ফেইল করেছে। আবার চেষ্টা করুন।");
