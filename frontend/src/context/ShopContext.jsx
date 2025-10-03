@@ -1,5 +1,3 @@
-
-
 import { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from 'react-router-dom';
@@ -19,54 +17,110 @@ const ShopContextProvider = (props) => {
   const [token, setToken] = useState('');
   const navigate = useNavigate();
 
+  // ✅ Add to Cart
+  const addToCart = async (itemId, size = "") => { 
+    toast.success('Added to cart');
+    let cartData = structuredClone(cartItems);
 
-// ✅ Add to Cart
-const addToCart = async (itemId, size = "") => {  // size optional
-  toast.success('Added to cart');
-
-  let cartData = structuredClone(cartItems);
-
-  if (cartData[itemId]) {
-    if (cartData[itemId][size]) {
-      cartData[itemId][size] += 1;
+    if (cartData[itemId]) {
+      if (cartData[itemId][size]) {
+        cartData[itemId][size] += 1;
+      } else {
+        cartData[itemId][size] = 1;
+      }
     } else {
+      cartData[itemId] = {};
       cartData[itemId][size] = 1;
     }
-  } else {
-    cartData[itemId] = {};
-    cartData[itemId][size] = 1;
-  }
 
-  setCartItems(cartData);
+    setCartItems(cartData);
 
-  if (token) {
-    try {
-      await axios.post(
-        backendUrl + '/api/cart/add',
-        { itemId, size },
-        { headers: { token } }
-      );
-    } catch (error) {
-      console.log(error);
-      toast.error(error.message);
+    // ✅ GTM / Pixel event
+    const product = products.find(p => p._id === itemId) || {};
+    window.dataLayer.push({
+      event: 'add_to_cart',
+      ecommerce: {
+        items: [{
+          item_id: itemId,
+          item_name: product.name || "",
+          price: product.price || 0,
+          quantity: 1,
+        }]
+      }
+    });
+
+    if (token) {
+      try {
+        await axios.post(
+          backendUrl + '/api/cart/add',
+          { itemId, size },
+          { headers: { token } }
+        );
+      } catch (error) {
+        console.log(error);
+        toast.error(error.message);
+      }
     }
-  }
-};
-
+  };
 
   // ✅ Remove from Cart
   const removeFromCart = (itemId, size) => {
     let cartData = structuredClone(cartItems);
-
     if (cartData[itemId] && cartData[itemId][size]) {
       delete cartData[itemId][size];
-
       if (Object.keys(cartData[itemId]).length === 0) {
         delete cartData[itemId];
       }
-
       setCartItems(cartData);
       toast.info("Removed from cart");
+
+      // ✅ GTM / Pixel event
+      const product = products.find(p => p._id === itemId) || {};
+      window.dataLayer.push({
+        event: 'remove_from_cart',
+        ecommerce: {
+          items: [{
+            item_id: itemId,
+            item_name: product.name || "",
+            price: product.price || 0,
+            quantity: 0,
+          }]
+        }
+      });
+    }
+  };
+
+  // ✅ Update Quantity
+  const updateQuantity = async (itemId, size, quantity) => {
+    let cartData = structuredClone(cartItems);
+    cartData[itemId][size] = quantity;
+    setCartItems(cartData);
+
+    // ✅ GTM / Pixel event
+    const product = products.find(p => p._id === itemId) || {};
+    window.dataLayer.push({
+      event: 'update_cart_quantity',
+      ecommerce: {
+        items: [{
+          item_id: itemId,
+          item_name: product.name || "",
+          price: product.price || 0,
+          quantity: quantity,
+        }]
+      }
+    });
+
+    if (token) {
+      try {
+        await axios.post(
+          backendUrl + '/api/cart/update',
+          { itemId, size, quantity },
+          { headers: { token } }
+        );
+      } catch (error) {
+        console.log(error);
+        toast.error(error.message);
+      }
     }
   };
 
@@ -86,26 +140,6 @@ const addToCart = async (itemId, size = "") => {  // size optional
       }
     }
     return totalCount;
-  };
-
-  // ✅ Update Quantity
-  const updateQuantity = async (itemId, size, quantity) => {
-    let cartData = structuredClone(cartItems);
-    cartData[itemId][size] = quantity;
-    setCartItems(cartData);
-
-    if (token) {
-      try {
-        await axios.post(
-          backendUrl + '/api/cart/update',
-          { itemId, size, quantity },
-          { headers: { token } }
-        );
-      } catch (error) {
-        console.log(error);
-        toast.error(error.message);
-      }
-    }
   };
 
   // ✅ Cart Amount
@@ -138,7 +172,7 @@ const addToCart = async (itemId, size = "") => {  // size optional
     } else if (userLocation.toLowerCase() === 'outside-dhaka') {
       return 150;
     } else {
-      return 150; // fallback
+      return 150;
     }
   };
 
@@ -157,7 +191,7 @@ const addToCart = async (itemId, size = "") => {  // size optional
     }
   };
 
-  // ✅ Get User Cart (logged in user)
+  // ✅ Get User Cart
   const getUserCart = async (userToken) => {
     try {
       const response = await axios.post(
@@ -175,12 +209,10 @@ const addToCart = async (itemId, size = "") => {  // size optional
     }
   };
 
-  // ✅ Load products on mount
   useEffect(() => {
     getProductData();
   }, []);
 
-  // ✅ Check token on mount
   useEffect(() => {
     const savedToken = localStorage.getItem('token');
     if (!token && savedToken) {
@@ -189,7 +221,6 @@ const addToCart = async (itemId, size = "") => {  // size optional
     }
   }, [token]);
 
-  // ✅ Load guest cart from localStorage
   useEffect(() => {
     const savedCart = localStorage.getItem("cart");
     if (savedCart) {
@@ -198,7 +229,6 @@ const addToCart = async (itemId, size = "") => {  // size optional
     }
   }, []);
 
-  // ✅ Always save cartItems to localStorage when it changes
   useEffect(() => {
     if (Object.keys(cartItems).length > 0) {
       localStorage.setItem("cart", JSON.stringify(cartItems));
@@ -222,7 +252,7 @@ const addToCart = async (itemId, size = "") => {  // size optional
     setShowSearch,
     cartItems,
     addToCart,
-    removeFromCart,   // ✅ Added removeFromCart here
+    removeFromCart,
     setCartItems,
     getCartCount,
     updateQuantity,

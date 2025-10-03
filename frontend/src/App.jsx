@@ -60,6 +60,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import SearchBar from "./components/SearchBar";
 import { ToastContainer } from "react-toastify";
+import OrderConfirmation from "./pages/OrderConfirmation";
 
 const App = () => {
   return (
@@ -83,6 +84,7 @@ const App = () => {
           element={<Navigate to="/guest-checkout" replace />}
         />
         <Route path="/guest-checkout" element={<GuestCheckout />} />
+        <Route path="/order-confirmation" element={<OrderConfirmation />} />
 
         <Route path="/track-order" element={<TrackOrder />} />
       </Routes>
