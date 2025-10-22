@@ -10,86 +10,11 @@ import { v4 as uuidv4 } from "uuid";
 // // ===============================
 // // ✅ Place Guest Order
 // // ===============================
-// const placeGuestOrder = async (req, res) => {
-//   console.log("Guest Order Body:", req.body);
-//   try {
-//     const { fullName, phone, fullAddress, items } = req.body;
-//     const deliveryCharge = req.body.shippingCharge || req.body.deliveryCharge || 0;
 
-//     if (!fullName || !phone || !fullAddress || !items) {
-//       return res.status(400).json({ success: false, message: "All fields are required" });
-//     }
-
-//     // 🛒 Step 1: Calculate product total
-//     let totalProductPrice = 0;
-//     for (const item of items) {
-//       const product = await Product.findById(item.productId).select("price");
-//       if (product) {
-//         totalProductPrice += product.price * (item.quantity || item.qty || 1);
-//       }
-//     }
-
-//     // 🛒 Step 2: Final amount (product + delivery)
-//     const finalAmount = totalProductPrice + deliveryCharge;
-
-//     // 🛒 Step 3: Create guest user
-//     const guestUser = await GuestUser.create({ fullName, phone, fullAddress });
-//     const trackingId = uuidv4();
-
-//     // 🛒 Step 4: Prepare items
-//     const orderItems = await Promise.all(
-//       items.map(async (item) => {
-//         const product = await Product.findById(item.productId).select("image name price");
-
-//         let productImage = "";
-//         if (product) {
-//           if (Array.isArray(product.image)) {
-//             productImage = product.image[0];
-//           } else {
-//             productImage = product.image;
-//           }
-//         }
-
-//         return {
-//           product: item.productId,
-//           name: product ? product.name : item.name,
-//           price: product ? product.price : item.price,
-//           quantity: item.quantity || item.qty || 1,
-//           size: item.size,
-//           image: productImage,
-//         };
-//       })
-//     );
-
-//    // 🛒 Step 5: Save order
-// const order = await Order.create({
-//   user: guestUser._id,
-//   userType: "GuestUser",
-//   items: orderItems,
-//   address: { fullName, phone, fullAddress },
-//   note: req.body.note || "", // ✅ এখানে note যোগ করো
-//   amount: finalAmount,
-//   trackingId,
-//   paymentMethod: "COD",
-//   payment: false,
-//   status: "Pending",
-// });
-
-
-//     res.status(201).json({ success: true, trackingId, order });
-
-//   } catch (error) {
-//     console.error("Guest Order Error:", error.message);
-//     res.status(500).json({ success: false, message: "Server Error" });
-//   }
-// };
-
-
-// upore thik ase
 
 const placeGuestOrder = async (req, res) => {
   try {
-    const { fullName, phone, fullAddress, items, orderToken } = req.body;
+    const { fullName, phone, alternatePhone, fullAddress, items, orderToken } = req.body;
     const deliveryCharge = req.body.shippingCharge || req.body.deliveryCharge || 0;
 
     if (!fullName || !phone || !fullAddress || !items || !orderToken) {
@@ -112,7 +37,8 @@ const placeGuestOrder = async (req, res) => {
     const finalAmount = totalProductPrice + deliveryCharge;
 
     // 🔹 Create guest user
-    const guestUser = await GuestUser.create({ fullName, phone, fullAddress });
+    const guestUser = await GuestUser.create({ fullName, phone, fullAddress, alternatePhone });
+
     const trackingId = uuidv4();
 
     // 🔹 Prepare items
@@ -133,12 +59,17 @@ const placeGuestOrder = async (req, res) => {
       })
     );
 
-    // 🔹 Save order
+    // 🔹 Save order with alternatePhone
     const order = await Order.create({
       user: guestUser._id,
       userType: "GuestUser",
       items: orderItems,
-      address: { fullName, phone, fullAddress },
+      address: { 
+        fullName, 
+        phone, 
+        alternatePhone: alternatePhone || "", // ✅ added
+        fullAddress 
+      },
       note: req.body.note || "",
       amount: finalAmount,
       trackingId,
@@ -155,7 +86,6 @@ const placeGuestOrder = async (req, res) => {
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };
-
 
 
 

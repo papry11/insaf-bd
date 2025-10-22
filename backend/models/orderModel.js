@@ -1,3 +1,5 @@
+
+
 // import mongoose from "mongoose";
 
 // const orderSchema = new mongoose.Schema({
@@ -25,20 +27,24 @@
 //     fullAddress: { type: String, required: true }
 //   },
 
-//   // ✅ এই লাইনটা যোগ করো
 //   note: { type: String, default: "" },
 
 //   amount: Number,
 //   paymentMethod: { type: String, default: "COD" },
 //   payment: { type: Boolean, default: false },
 //   status: { type: String, default: "Pending" },
-//   trackingId: String
+//   trackingId: String,
+
+//   // ✅ New field for duplicate order prevention
+//   orderToken: { type: String, unique: true, required: true }
+
 // }, { timestamps: true });
+
+// // ✅ Create unique index for orderToken
+// orderSchema.index({ orderToken: 1 }, { unique: true });
 
 // export default mongoose.model("Order", orderSchema);
 
-
-// upore thik ase
 
 import mongoose from "mongoose";
 
@@ -64,6 +70,7 @@ const orderSchema = new mongoose.Schema({
   address: {
     fullName: { type: String, required: true },
     phone: { type: String, required: true },
+    alternatePhone: { type: String }, // ✅ added alternate phone
     fullAddress: { type: String, required: true }
   },
 
@@ -75,12 +82,10 @@ const orderSchema = new mongoose.Schema({
   status: { type: String, default: "Pending" },
   trackingId: String,
 
-  // ✅ New field for duplicate order prevention
   orderToken: { type: String, unique: true, required: true }
 
 }, { timestamps: true });
 
-// ✅ Create unique index for orderToken
 orderSchema.index({ orderToken: 1 }, { unique: true });
 
 export default mongoose.model("Order", orderSchema);
