@@ -298,30 +298,24 @@
 
 
 
-
-
-
-
 import React, { useState, useEffect, useContext } from "react"; 
 import axios from "axios";
 import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
 import { ShopContext } from "../context/ShopContext";
 import { useNavigate } from "react-router-dom";
-import { trackPurchase } from "../utils/metaPixel"; // ✅ Added
+import { trackPurchase } from "../utils/metaPixel";
 import { v4 as uuidv4 } from "uuid";
 
 const GuestCheckout = () => {
-  const { setCartItems: setContextCartItems, backendUrl } =
-    useContext(ShopContext);
-
+  const { setCartItems: setContextCartItems, backendUrl } = useContext(ShopContext);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
     fullAddress: "",
-    note: "", // ✳️ New field for note
+    note: "",
   });
 
   const [method, setMethod] = useState("cod");
@@ -342,11 +336,9 @@ const GuestCheckout = () => {
   });
 
   const [total, setTotal] = useState(0);
-
-  // 🔹 Loader / processing state
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Prevent page refresh/back during checkout
+  // Prevent refresh/back during checkout
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       if (isProcessing) {
@@ -355,8 +347,20 @@ const GuestCheckout = () => {
       }
     };
     window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [isProcessing]);
+
+    const handlePopState = () => {
+      const orderPlaced = localStorage.getItem("orderPlaced");
+      if (orderPlaced) {
+        navigate("/", { replace: true });
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [isProcessing, navigate]);
 
   // Fetch product details from backend
   useEffect(() => {
@@ -398,7 +402,7 @@ const GuestCheckout = () => {
 
   const handleOrder = async (e) => {
     e.preventDefault();
-    setIsProcessing(true); // 🔹 Start loader & disable button
+    setIsProcessing(true);
 
     try {
       const subtotal = cartItems.reduce(
@@ -406,8 +410,6 @@ const GuestCheckout = () => {
         0
       );
       const finalAmount = subtotal + shippingCharge;
-
-      // 🔹 Generate unique token per checkout
       const orderToken = uuidv4();
 
       const res = await axios.post(`${backendUrl}/api/order/place-guest`, {
@@ -419,17 +421,11 @@ const GuestCheckout = () => {
         amount: finalAmount,
         deliveryCharge: shippingCharge,
         paymentMethod: method,
-        orderToken, // ✅ send token
+        orderToken,
       });
 
       if (res.data?.trackingId) {
-        // ✅ Meta Pixel Purchase Event (Custom Function)
-        trackPurchase({
-          items: cartItems,
-          amount: finalAmount,
-        });
-
-        // ✅ Fallback direct fbq call (optional safeguard)
+        trackPurchase({ items: cartItems, amount: finalAmount });
         if (window.fbq) {
           window.fbq("track", "Purchase", {
             value: finalAmount,
@@ -443,7 +439,6 @@ const GuestCheckout = () => {
           });
         }
 
-        // ✅ GTM dataLayer push
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
           event: "purchase",
@@ -460,13 +455,15 @@ const GuestCheckout = () => {
           },
         });
 
-        // ✅ Clear cart
         localStorage.removeItem("cart");
         setCartItems([]);
         setContextCartItems({});
 
-        // ✅ Redirect to Order Confirmation
+        // Mark order as placed
+        localStorage.setItem("orderPlaced", "true");
+
         navigate("/order-confirmation", {
+          replace: true,
           state: {
             orderId: res.data.trackingId,
             deliveryCity: shippingCharge <= 100 ? "dhaka" : "outside",
@@ -477,13 +474,9 @@ const GuestCheckout = () => {
       }
     } catch (err) {
       console.error("❌ Order Failed:", err);
-      if (err.response?.data?.message) {
-        alert(err.response.data.message); // duplicate order message
-      } else {
-        alert("❌ অর্ডার ফেইল করেছে। আবার চেষ্টা করুন।");
-      }
+      alert("❌ অর্ডার ফেইল করেছে। আবার চেষ্টা করুন।");
     } finally {
-      setIsProcessing(false); // 🔹 Stop loader
+      setIsProcessing(false);
     }
   };
 
@@ -508,7 +501,6 @@ const GuestCheckout = () => {
             type="text"
             placeholder="Enter Your Name"
           />
-
           <label className="mx-2">Phone Number</label>
           <input
             required
@@ -519,7 +511,6 @@ const GuestCheckout = () => {
             type="tel"
             placeholder="Enter Your Number"
           />
-
           <label className="mx-2">Address</label>
           <input
             required
@@ -530,8 +521,6 @@ const GuestCheckout = () => {
             type="text"
             placeholder="Enter Your Address"
           />
-
-          {/* ✳️ Note Box */}
           <label className="mx-2">Note (optional)</label>
           <textarea
             name="note"
@@ -541,8 +530,6 @@ const GuestCheckout = () => {
             placeholder="Enter any special note..."
             className="border border-gray-300 rounded py-1.5 px-3.5 w-full m-2"
           ></textarea>
-
-          {/* Shipping Charge */}
           <div className="w-full m-2 border border-gray-300 rounded p-4">
             <p className="mb-2 font-semibold">Shipping Charge :</p>
             <div className="flex flex-col sm:flex-row gap-4">
@@ -606,13 +593,13 @@ const GuestCheckout = () => {
           <div className="w-full">
             <button
               type="submit"
-              disabled={isProcessing} // 🔹 disable during processing
+              disabled={isProcessing}
               className={`w-full mt-6 px-12 py-2 rounded-full font-semibold text-white text-lg
                 bg-gradient-to-r from-[#9b5fa0] to-[#7f3f85]
                 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-2xl
                 ${isProcessing ? "opacity-50 cursor-not-allowed" : ""}`}
             >
-              {isProcessing ? "Order Processing..." : "PLACE ORDER"} {/* 🔹 Loader text */}
+              {isProcessing ? "Order Processing..." : "PLACE ORDER"}
             </button>
           </div>
         </div>
@@ -622,6 +609,3 @@ const GuestCheckout = () => {
 };
 
 export default GuestCheckout;
-
-
-
