@@ -1,9 +1,12 @@
+
 // import React, { useState, useEffect, useContext } from "react";
 // import axios from "axios";
 // import Title from "../components/Title";
 // import CartTotal from "../components/CartTotal";
 // import { ShopContext } from "../context/ShopContext";
 // import { useNavigate } from "react-router-dom";
+// import { trackPurchase } from "../utils/metaPixel"; // ✅ Added
+// import { v4 as uuidv4 } from "uuid";
 
 // const GuestCheckout = () => {
 //   const { setCartItems: setContextCartItems, backendUrl } =
@@ -15,6 +18,7 @@
 //     fullName: "",
 //     phone: "",
 //     fullAddress: "",
+//     note: "", // ✳️ New field for note
 //   });
 
 //   const [method, setMethod] = useState("cod");
@@ -83,18 +87,29 @@
 //       );
 //       const finalAmount = subtotal + shippingCharge;
 
-//       const res = await axios.post(`${backendUrl}/api/order/place-guest`, {
+//        // 🔹 Generate unique token per checkout
+//         const orderToken = uuidv4();
+
+//        const res = await axios.post(`${backendUrl}/api/order/place-guest`, {
 //         fullName: formData.fullName,
 //         phone: formData.phone,
 //         fullAddress: formData.fullAddress,
+//         note: formData.note, // ✳️ Include note in order payload
 //         items: cartItems,
 //         amount: finalAmount,
 //         deliveryCharge: shippingCharge,
-//         paymentMethod: method,
+//          paymentMethod: method,
+//          orderToken, // ✅ send token
 //       });
 
 //       if (res.data?.trackingId) {
-//         // ✅ Meta Pixel Purchase Event
+//         // ✅ Meta Pixel Purchase Event (Custom Function)
+//         trackPurchase({
+//           items: cartItems,
+//           amount: finalAmount,
+//         });
+
+//         // ✅ Fallback direct fbq call (optional safeguard)
 //         if (window.fbq) {
 //           window.fbq("track", "Purchase", {
 //             value: finalAmount,
@@ -190,6 +205,18 @@
 //             placeholder="Enter Your Address"
 //           />
 
+//             {/* ✳️ Note Box */}
+//           <label className="mx-2">Note (optional)</label>
+//           <textarea
+//             name="note"
+//             onChange={handleChange}
+//             value={formData.note}
+//             rows={3}
+//             placeholder="Enter any special note..."
+//             className="border border-gray-300 rounded py-1.5 px-3.5 w-full m-2"
+//           ></textarea>
+
+
 //           {/* Shipping Charge */}
 //           <div className="w-full m-2 border border-gray-300 rounded p-4">
 //             <p className="mb-2 font-semibold">Shipping Charge :</p>
@@ -273,13 +300,16 @@
 
 
 
-import React, { useState, useEffect, useContext } from "react";
+
+
+import React, { useState, useEffect, useContext } from "react"; 
 import axios from "axios";
 import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
 import { ShopContext } from "../context/ShopContext";
 import { useNavigate } from "react-router-dom";
 import { trackPurchase } from "../utils/metaPixel"; // ✅ Added
+import { v4 as uuidv4 } from "uuid";
 
 const GuestCheckout = () => {
   const { setCartItems: setContextCartItems, backendUrl } =
@@ -291,6 +321,7 @@ const GuestCheckout = () => {
     fullName: "",
     phone: "",
     fullAddress: "",
+    note: "", // ✳️ New field for note
   });
 
   const [method, setMethod] = useState("cod");
@@ -311,6 +342,21 @@ const GuestCheckout = () => {
   });
 
   const [total, setTotal] = useState(0);
+
+  // 🔹 Loader / processing state
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  // Prevent page refresh/back during checkout
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (isProcessing) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isProcessing]);
 
   // Fetch product details from backend
   useEffect(() => {
@@ -352,6 +398,8 @@ const GuestCheckout = () => {
 
   const handleOrder = async (e) => {
     e.preventDefault();
+    setIsProcessing(true); // 🔹 Start loader & disable button
+
     try {
       const subtotal = cartItems.reduce(
         (acc, item) => acc + (item.price || 0) * item.quantity,
@@ -359,14 +407,19 @@ const GuestCheckout = () => {
       );
       const finalAmount = subtotal + shippingCharge;
 
+      // 🔹 Generate unique token per checkout
+      const orderToken = uuidv4();
+
       const res = await axios.post(`${backendUrl}/api/order/place-guest`, {
         fullName: formData.fullName,
         phone: formData.phone,
         fullAddress: formData.fullAddress,
+        note: formData.note,
         items: cartItems,
         amount: finalAmount,
         deliveryCharge: shippingCharge,
         paymentMethod: method,
+        orderToken, // ✅ send token
       });
 
       if (res.data?.trackingId) {
@@ -424,7 +477,13 @@ const GuestCheckout = () => {
       }
     } catch (err) {
       console.error("❌ Order Failed:", err);
-      alert("❌ অর্ডার ফেইল করেছে। আবার চেষ্টা করুন।");
+      if (err.response?.data?.message) {
+        alert(err.response.data.message); // duplicate order message
+      } else {
+        alert("❌ অর্ডার ফেইল করেছে। আবার চেষ্টা করুন।");
+      }
+    } finally {
+      setIsProcessing(false); // 🔹 Stop loader
     }
   };
 
@@ -471,6 +530,17 @@ const GuestCheckout = () => {
             type="text"
             placeholder="Enter Your Address"
           />
+
+          {/* ✳️ Note Box */}
+          <label className="mx-2">Note (optional)</label>
+          <textarea
+            name="note"
+            onChange={handleChange}
+            value={formData.note}
+            rows={3}
+            placeholder="Enter any special note..."
+            className="border border-gray-300 rounded py-1.5 px-3.5 w-full m-2"
+          ></textarea>
 
           {/* Shipping Charge */}
           <div className="w-full m-2 border border-gray-300 rounded p-4">
@@ -536,11 +606,13 @@ const GuestCheckout = () => {
           <div className="w-full">
             <button
               type="submit"
-              className="w-full mt-6 px-12 py-2 rounded-full font-semibold text-white text-lg
-              bg-gradient-to-r from-[#9b5fa0] to-[#7f3f85] 
-              shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-2xl"
+              disabled={isProcessing} // 🔹 disable during processing
+              className={`w-full mt-6 px-12 py-2 rounded-full font-semibold text-white text-lg
+                bg-gradient-to-r from-[#9b5fa0] to-[#7f3f85]
+                shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-2xl
+                ${isProcessing ? "opacity-50 cursor-not-allowed" : ""}`}
             >
-              PLACE ORDER
+              {isProcessing ? "Order Processing..." : "PLACE ORDER"} {/* 🔹 Loader text */}
             </button>
           </div>
         </div>
@@ -550,3 +622,6 @@ const GuestCheckout = () => {
 };
 
 export default GuestCheckout;
+
+
+
