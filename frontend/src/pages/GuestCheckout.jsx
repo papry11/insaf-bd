@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useContext } from "react"; 
 import axios from "axios";
 import Title from "../components/Title";
@@ -15,7 +14,7 @@ const GuestCheckout = () => {
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
-    alternatePhone: "", // ✅ Added alternate phone
+    alternatePhone: "",
     fullAddress: "",
     note: "",
   });
@@ -40,7 +39,6 @@ const GuestCheckout = () => {
   const [total, setTotal] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Prevent refresh/back during checkout
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       if (isProcessing) {
@@ -64,7 +62,6 @@ const GuestCheckout = () => {
     };
   }, [isProcessing, navigate]);
 
-  // Fetch product details from backend
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -89,7 +86,6 @@ const GuestCheckout = () => {
     if (cartItems.length > 0) fetchProducts();
   }, []);
 
-  // Calculate subtotal
   useEffect(() => {
     const sum = cartItems.reduce(
       (acc, item) => acc + (item.price || 0) * item.quantity,
@@ -117,7 +113,7 @@ const GuestCheckout = () => {
       const res = await axios.post(`${backendUrl}/api/order/place-guest`, {
         fullName: formData.fullName,
         phone: formData.phone,
-        alternatePhone: formData.alternatePhone, // ✅ send alternate phone
+        alternatePhone: formData.alternatePhone,
         fullAddress: formData.fullAddress,
         note: formData.note,
         items: cartItems,
@@ -128,20 +124,20 @@ const GuestCheckout = () => {
       });
 
       if (res.data?.trackingId) {
-        trackPurchase({ items: cartItems, amount: finalAmount });
-        if (window.fbq) {
-          window.fbq("track", "Purchase", {
-            value: finalAmount,
-            currency: "BDT",
-            contents: cartItems.map((item) => ({
-              id: item.productId,
-              quantity: item.quantity,
-              item_price: item.price,
-            })),
-            content_type: "product",
-          });
-        }
 
+        /* -----------------------------------------
+          FIXED: Only ONE Purchase Event Will Fire
+        ------------------------------------------ */
+        trackPurchase({
+          items: cartItems.map(item => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            price: item.price
+          })),
+          amount: finalAmount
+        });
+
+        /* GTM DATA LAYER PURCHASE EVENT */
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
           event: "purchase",
@@ -149,11 +145,11 @@ const GuestCheckout = () => {
             transaction_id: res.data.trackingId,
             value: finalAmount,
             currency: "BDT",
-            items: cartItems.map((item) => ({
+            items: cartItems.map(item => ({
               item_id: item.productId,
               item_name: item.name,
               price: item.price,
-              quantity: item.quantity,
+              quantity: item.quantity
             })),
           },
         });
@@ -161,7 +157,6 @@ const GuestCheckout = () => {
         localStorage.removeItem("cart");
         setCartItems([]);
         setContextCartItems({});
-
         localStorage.setItem("orderPlaced", "true");
 
         navigate("/order-confirmation", {
@@ -213,7 +208,6 @@ const GuestCheckout = () => {
             type="tel"
             placeholder="Enter Your Number"
           />
-          {/* ✅ Alternate Phone */}
           <label className="mx-2">Phone Number (optional)</label>
           <input
             onChange={handleChange}

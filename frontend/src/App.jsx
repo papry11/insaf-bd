@@ -68,7 +68,7 @@ const App = () => {
       <ToastContainer />
       <Navbar />
       <SearchBar />
-
+   
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/collection" element={<Collection />} />
@@ -90,7 +90,7 @@ const App = () => {
       </Routes>
 
       <Footer />
-    </div>
+      </div>
   );
 };
 

@@ -73,7 +73,7 @@ const Cart = () => {
             item_id: product._id,
             item_name: product.name,
             price: product.price,
-            quantity: 1, // এখানে ১ বা item.quantity দিতে পারেন
+            quantity: 1, 
             item_variant: size,
           },
         ],
