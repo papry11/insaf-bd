@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react"; 
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
@@ -126,32 +126,15 @@ const GuestCheckout = () => {
       if (res.data?.trackingId) {
 
         /* -----------------------------------------
-          FIXED: Only ONE Purchase Event Will Fire
+          PURCHASE EVENT - Meta Pixel
         ------------------------------------------ */
         trackPurchase({
           items: cartItems.map(item => ({
-            productId: item.productId,
+            _id: item.productId,
             quantity: item.quantity,
             price: item.price
           })),
           amount: finalAmount
-        });
-
-        /* GTM DATA LAYER PURCHASE EVENT */
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-          event: "purchase",
-          ecommerce: {
-            transaction_id: res.data.trackingId,
-            value: finalAmount,
-            currency: "BDT",
-            items: cartItems.map(item => ({
-              item_id: item.productId,
-              item_name: item.name,
-              price: item.price,
-              quantity: item.quantity
-            })),
-          },
         });
 
         localStorage.removeItem("cart");
