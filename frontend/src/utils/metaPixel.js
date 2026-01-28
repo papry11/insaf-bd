@@ -71,5 +71,7 @@ export const trackCustomEvent = (eventName, params = {}) => {
   if (typeof window !== 'undefined' && window.fbq) {
     window.fbq('track', eventName, params);
     console.log(`📊 Meta Pixel: ${eventName} event fired`, params);
+  } else {
+    console.warn('⚠️ Meta Pixel not loaded - Custom event not tracked');
   }
 };
