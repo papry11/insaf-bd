@@ -45,8 +45,8 @@
 
 // export default App;
 
-import React from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Collection from "./pages/Collection";
@@ -62,9 +62,33 @@ import SearchBar from "./components/SearchBar";
 import { ToastContainer } from "react-toastify";
 import OrderConfirmation from "./pages/OrderConfirmation";
 
+// Route tracking - Smart PageView tracking for SPA navigation
+const RouteTracker = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Track PageView on route changes (after initial page load)
+    if (typeof window !== 'undefined' && window.fbq && window._fbqInitialized) {
+      // Skip the first route if initial PageView was already tracked
+      if (window._initialPageViewTracked && location.pathname !== '/') {
+        // Small delay to ensure React routing is complete
+        const timeoutId = setTimeout(() => {
+          window.fbq('track', 'PageView');
+          console.log('📊 Meta Pixel: PageView tracked for route:', location.pathname);
+        }, 50);
+
+        return () => clearTimeout(timeoutId);
+      }
+    }
+  }, [location.pathname]);
+
+  return null;
+};
+
 const App = () => {
   return (
     <div className="px-4 sm:px-[svw] md:px-[7vw] lg:px-[9vw]">
+      <RouteTracker />
       <ToastContainer />
       <Navbar />
       <SearchBar />
