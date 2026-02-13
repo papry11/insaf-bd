@@ -78,17 +78,20 @@ const ShopContextProvider = (props) => {
     setCartItems(cartData);
 
     const product = products.find(p => p._id === itemId) || {};
-    window.dataLayer.push({
-      event: 'add_to_cart',
-      ecommerce: {
-        items: [{
-          item_id: itemId,
-          item_name: product.name || "",
-          price: product.price || 0,
-          quantity: 1,
-        }]
-      }
-    });
+    // Only push to dataLayer if it exists (for GTM compatibility)
+    if (window.dataLayer) {
+      window.dataLayer.push({
+        event: 'add_to_cart',
+        ecommerce: {
+          items: [{
+            item_id: itemId,
+            item_name: product.name || "",
+            price: product.price || 0,
+            quantity: 1,
+          }]
+        }
+      });
+    }
 
     if (token) {
       try {

@@ -1,4 +1,21 @@
 // Meta Pixel Event Tracking
+// Using BDT for all events to maintain accurate e-commerce analytics
+// All monetary values use proper decimal formatting (2 decimal places)
+
+// Prevent duplicate events within short timeframes
+const eventCooldowns = new Map();
+const COOLDOWN_MS = 1000; // 1 second cooldown
+
+const shouldTrackEvent = (eventKey) => {
+  const now = Date.now();
+  const lastTracked = eventCooldowns.get(eventKey);
+
+  if (!lastTracked || (now - lastTracked) > COOLDOWN_MS) {
+    eventCooldowns.set(eventKey, now);
+    return true;
+  }
+  return false;
+};
 
 /**
  * Track AddToCart event
@@ -9,16 +26,34 @@
  * @param {string} size - Selected size (optional)
  */
 export const trackAddToCart = (product, size = "") => {
-  if (typeof window !== 'undefined' && window.fbq) {
-    window.fbq('track', 'AddToCart', {
+  // Ensure we have valid product data
+  if (!product || !product.id || !product.name) {
+    console.warn('📊 Meta Pixel: AddToCart event skipped - invalid product data', product);
+    return;
+  }
+
+  const eventKey = `addToCart_${product.id}_${size}`;
+
+  if (!shouldTrackEvent(eventKey)) {
+    console.log('📊 Meta Pixel: AddToCart event skipped (cooldown)', {
+      product: product.name,
+      size
+    });
+    return;
+  }
+
+  if (typeof window !== 'undefined' && window.fbq && window._fbqInitialized) {
+    const addToCartData = {
       content_name: product.name,
       content_ids: [product.id],
       content_type: 'product',
-      value: product.price,
+      value: parseFloat((product.price || 0).toFixed(2)), // Ensure 2 decimal places
       currency: 'BDT',
       content_category: product.category || '',
       ...(size && { size: size })
-    });
+    };
+
+    window.fbq('track', 'AddToCart', addToCartData);
     console.log('📊 Meta Pixel: AddToCart event fired', {
       product: product.name,
       price: product.price,
@@ -36,23 +71,41 @@ export const trackAddToCart = (product, size = "") => {
  * @param {number} orderData.amount
  */
 export const trackPurchase = (orderData) => {
-  if (typeof window !== 'undefined' && window.fbq) {
+  // Ensure we have valid data
+  if (!orderData || !orderData.items || !Array.isArray(orderData.items) || orderData.items.length === 0) {
+    console.warn('📊 Meta Pixel: Purchase event skipped - no items or invalid data', orderData);
+    return;
+  }
+
+  const eventKey = `purchase_${orderData.amount}_${orderData.items.length}_${Date.now()}`;
+
+  if (!shouldTrackEvent(eventKey)) {
+    console.log('📊 Meta Pixel: Purchase event skipped (cooldown)', {
+      amount: orderData.amount,
+      items: orderData.items.length
+    });
+    return;
+  }
+
+  if (typeof window !== 'undefined' && window.fbq && window._fbqInitialized) {
     const contents = orderData.items.map(item => ({
-      id: item._id,
-      quantity: item.quantity,
-      item_price: item.price
+      id: item._id || item.productId,
+      quantity: item.quantity || 1,
+      item_price: parseFloat((item.price || 0).toFixed(2)) // Ensure 2 decimal places
     }));
 
-    const contentIds = orderData.items.map(item => item._id);
+    const contentIds = orderData.items.map(item => item._id || item.productId);
 
-    window.fbq('track', 'Purchase', {
+    const purchaseData = {
       content_ids: contentIds,
       contents: contents,
       content_type: 'product',
-      value: orderData.amount,
-      currency: 'BDT',
+      value: parseFloat((orderData.amount || 0).toFixed(2)), // Ensure 2 decimal places
+      currency: 'BDT', // Use BDT to maintain accurate analytics
       num_items: orderData.items.length
-    });
+    };
+
+    window.fbq('track', 'Purchase', purchaseData);
     console.log('📊 Meta Pixel: Purchase event fired', {
       amount: orderData.amount,
       items: orderData.items.length
@@ -68,7 +121,14 @@ export const trackPurchase = (orderData) => {
  * @param {Object} params - Event parameters
  */
 export const trackCustomEvent = (eventName, params = {}) => {
-  if (typeof window !== 'undefined' && window.fbq) {
+  const eventKey = `custom_${eventName}_${JSON.stringify(params)}`;
+
+  if (!shouldTrackEvent(eventKey)) {
+    console.log(`📊 Meta Pixel: ${eventName} event skipped (cooldown)`, params);
+    return;
+  }
+
+  if (typeof window !== 'undefined' && window.fbq && window._fbqInitialized) {
     window.fbq('track', eventName, params);
     console.log(`📊 Meta Pixel: ${eventName} event fired`, params);
   } else {

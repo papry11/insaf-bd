@@ -8,7 +8,7 @@ import { trackPurchase } from "../utils/metaPixel";
 import { v4 as uuidv4 } from "uuid";
 
 const GuestCheckout = () => {
-  const { setCartItems: setContextCartItems, backendUrl } = useContext(ShopContext);
+  const { cartItems: contextCartItems, setCartItems: setContextCartItems, backendUrl } = useContext(ShopContext);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -23,6 +23,22 @@ const GuestCheckout = () => {
   const [shippingCharge, setShippingCharge] = useState(0);
 
   const [cartItems, setCartItems] = useState(() => {
+    // First try to get from context cart items (converted to local format)
+    const contextCart = contextCartItems;
+    if (contextCart && Object.keys(contextCart).length > 0) {
+      return Object.entries(contextCart).flatMap(([productId, sizes]) =>
+        Object.entries(sizes).map(([size, quantity]) => ({
+          productId,
+          size,
+          quantity,
+          price: 0,
+          name: "",
+          image: "",
+        }))
+      );
+    }
+
+    // Fallback to localStorage
     const stored = JSON.parse(localStorage.getItem("cart")) || {};
     return Object.entries(stored).flatMap(([productId, sizes]) =>
       Object.entries(sizes).map(([size, quantity]) => ({
@@ -125,17 +141,27 @@ const GuestCheckout = () => {
 
       if (res.data?.trackingId) {
 
-        /* -----------------------------------------
-          PURCHASE EVENT - Meta Pixel
-        ------------------------------------------ */
-        trackPurchase({
-          items: cartItems.map(item => ({
-            _id: item.productId,
+        // Store cart data for tracking BEFORE clearing
+        // Ensure we have valid cart items with product data
+        const validCartItems = cartItems.filter(item =>
+          item.productId && item.price > 0 && item.quantity > 0
+        );
+
+        const trackingData = {
+          items: validCartItems.map(item => ({
+            _id: item.productId || item._id,
             quantity: item.quantity,
             price: item.price
           })),
           amount: finalAmount
-        });
+        };
+
+        /* -----------------------------------------
+          PURCHASE EVENT - Meta Pixel
+        ------------------------------------------ */
+        if (trackingData.items.length > 0) {
+          trackPurchase(trackingData);
+        }
 
         localStorage.removeItem("cart");
         setCartItems([]);

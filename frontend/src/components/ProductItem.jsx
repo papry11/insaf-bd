@@ -13,7 +13,7 @@ const ProductItem = ({ id, image, name, price }) => {
 
   return (
     <div className="relative w-full max-w-sm bg-white rounded-2xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl">
-      <Link to={`/Product/${id}`}>
+      <Link to={`/product/${id}`}>
         <div className="h-64 overflow-hidden rounded-t-2xl">
           <img
             className="w-full h-full object-cover"
